@@ -23,7 +23,7 @@ namespace Service
 
         public ServiceManager(IRepositoryManager repositoryManager, ILoggerManager logger,
             IMapper mapper, IEmployeeLinks employeeLinks,
-            UserManager<User> userManager, IOptions<JwtConfiguration> configuration)
+            UserManager<User> userManager, IConfiguration configuration)
         {
             _companyService = new Lazy<ICompanyService>(() =>
             new CompanyService(repositoryManager, logger, mapper));

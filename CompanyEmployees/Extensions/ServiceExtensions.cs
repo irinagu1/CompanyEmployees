@@ -16,6 +16,7 @@ using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;
 using System.Text;
 using Entities.ConfigurationModels;
+using Microsoft.OpenApi.Models;
 
 namespace CompanyEmployees.Extensions
 {
@@ -179,9 +180,49 @@ namespace CompanyEmployees.Extensions
         }
 
         public static void AddJwtConfiguration(this IServiceCollection services,
-        IConfiguration configuration) =>
-            services.Configure<JwtConfiguration>(configuration.GetSection("JwtSettings"));
-            
-            
+            IConfiguration configuration)
+        {
+            services.Configure<JwtConfiguration>("JwtSettings",
+                configuration.GetSection("JwtSettings"));
+        }
+
+        public static void ConfigureSwagger(this IServiceCollection services)
+        {
+            services.AddSwaggerGen(s =>
+            {
+                s.SwaggerDoc("v1", new OpenApiInfo
+                {
+                    Title = "Code Maze API",
+                    Version = "v1",
+                    Description = "CompanyEmployees API by CodeMaze",
+                    TermsOfService = new Uri("https://example.com/terms"),
+                    Contact = new OpenApiContact
+                    {
+                        Name = "John Doe",
+                        Email = "John.Doe@gmail.com",
+                        Url = new Uri("https://twitter.com/johndoe"),
+                    },
+                    License = new OpenApiLicense
+                    {
+                        Name = "CompanyEmployees API LICX",
+                        Url = new Uri("https://example.com/license"),
+                    }
+                });
+           
+                s.SwaggerDoc("v2", new OpenApiInfo
+                {
+                    Title = "Code Maze API",
+                    Version = "v2"
+                });
+
+                var xmlFile = $"{typeof(Presentation.AssemblyReference).Assembly.GetName().Name}.xml";
+                var xmlPath = Path.Combine(AppContext.BaseDirectory, xmlFile);
+                s.IncludeXmlComments(xmlPath);
+
+            });
+
+
+        }
+
     }
 }
